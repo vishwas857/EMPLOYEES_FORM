@@ -5,41 +5,34 @@ from dotenv import load_dotenv
 
 app = Flask(__name__)
 
-# Load local .env if exists (for local testing)
+# Load .env locally
 load_dotenv()
-#this is the change that i have made to the code
 
-# Database config from environment
+# Database
 DB_HOST = os.getenv("DB_HOST")
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_NAME = os.getenv("DB_NAME")
 DB_PORT = int(os.getenv("DB_PORT", 3306))
 
-# Validate environment variables
-missing_vars = [v for v in ["DB_HOST", "DB_USER", "DB_PASSWORD", "DB_NAME"] if not os.getenv(v)]
-if missing_vars:
-    raise EnvironmentError(f"Missing environment variables: {', '.join(missing_vars)}")
+# Validate variables
+missing = [v for v in ["DB_HOST","DB_USER","DB_PASSWORD","DB_NAME"] if not os.getenv(v)]
+if missing:
+    raise EnvironmentError(f"Missing env variables: {', '.join(missing)}")
 
-# Connect to MySQL
 def get_connection():
-    try:
-        return mysql.connector.connect(
-            host=DB_HOST,
-            user=DB_USER,
-            password=DB_PASSWORD,
-            database=DB_NAME,
-            port=DB_PORT
-        )
-    except mysql.connector.Error as err:
-        print(f"Database connection error: {err}")
-        raise
+    return mysql.connector.connect(
+        host=DB_HOST,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        database=DB_NAME,
+        port=DB_PORT
+    )
 
-# Initialize database
 def init_db():
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute('''
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS employee_details (
             id INT AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(50) NOT NULL,
@@ -47,14 +40,18 @@ def init_db():
             location VARCHAR(100) NOT NULL,
             phone VARCHAR(20) NOT NULL
         )
-    ''')
+    """)
     conn.commit()
     cursor.close()
     conn.close()
 
-init_db()
+# ❗ IMPORTANT FIX: Do NOT run init_db() on Railway
+if os.getenv("RAILWAY_ENVIRONMENT") is None:
+    print("Local mode → initializing DB")
+    init_db()
+else:
+    print("Railway mode → skipping DB initialization")
 
-# Routes
 @app.route('/', methods=['GET', 'POST'])
 def form():
     form_data = {"name": "", "gender": "", "location": "", "phone": ""}
@@ -67,7 +64,7 @@ def form():
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(
-            "INSERT INTO employee_details (name, gender, location, phone) VALUES (%s, %s, %s, %s)",
+            "INSERT INTO employee_details (name, gender, location, phone) VALUES (%s,%s,%s,%s)",
             (form_data["name"], form_data["gender"], form_data["location"], form_data["phone"])
         )
         conn.commit()
@@ -88,7 +85,6 @@ def show_employees():
     conn.close()
     return render_template('employees.html', employees=employees)
 
-# Railway uses PORT environment variable
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 8000))
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0", port=port)
