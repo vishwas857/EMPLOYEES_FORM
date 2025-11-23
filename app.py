@@ -10,11 +10,11 @@ load_dotenv()
 #this is the change that i have made to the code
 
 # Database config from environment
-DB_HOST = os.getenv("DB_HOST")
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
-DB_NAME = os.getenv("DB_NAME")
-DB_PORT = int(os.getenv("DB_PORT", 3306))
+DB_HOST = os.getenv("MYSQLHOST")
+DB_USER = os.getenv("MYSQLUSER")
+DB_PASSWORD = os.getenv("MYSQLPASSWORD")
+DB_NAME = os.getenv("MYSQL_DATABASE")
+DB_PORT = int(os.getenv("MYSQLPORT", 3306))
 
 # Validate environment variables
 missing_vars = [v for v in ["DB_HOST", "DB_USER", "DB_PASSWORD", "DB_NAME"] if not os.getenv(v)]
