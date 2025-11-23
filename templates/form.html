@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Form</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            font-family: Arial, sans-serif;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .form-container {
+            background-color: #1c1c1c;
+            padding: 30px;
+            border-radius: 10px;
+            width: 400px;
+        }
+        h2 { text-align: center; color: #00ffea; }
+        label { font-size: 14px; color: #ccc; }
+        input, select {
+            width: 100%; padding: 10px; margin-top: 6px; margin-bottom: 15px;
+            background-color: #2a2a2a; border: 1px solid #555; border-radius: 5px; color: white;
+        }
+        button {
+            width: 100%; padding: 12px; background-color: #00ffea; border: none;
+            border-radius: 6px; color: black; font-size: 16px; cursor: pointer;
+        }
+        button:hover { background-color: #00c7bd; }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h2>Employee Form</h2>
+    <form method="POST">
+        <label>Name:</label>
+        <input type="text" name="name" required value="{{ data.name }}">
+
+        <label>Gender:</label>
+        <select name="gender" required>
+            <option value="" disabled>Select Gender</option>
+            <option value="Male" {% if data.gender == 'Male' %}selected{% endif %}>Male</option>
+            <option value="Female" {% if data.gender == 'Female' %}selected{% endif %}>Female</option>
+        </select>
+
+        <label>Location:</label>
+        <input type="text" name="location" required value="{{ data.location }}">
+
+        <label>Phone (10 digits):</label>
+        <input type="text" name="phone" maxlength="10" pattern="[0-9]{10}" required value="{{ data.phone }}">
+
+        <button type="submit">Submit</button>
+    </form>
+    <br>
+    <a href="/employees" style="color:#00ffea;">View All Employees</a>
+</div>
+</body>
+</html>

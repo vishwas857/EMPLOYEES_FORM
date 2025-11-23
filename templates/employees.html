@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employees</title>
+    <style>
+        body { background-color: #0d0d0d; font-family: Arial; color: white; text-align: center; }
+        table {
+            margin: 20px auto; border-collapse: collapse; width: 80%; background-color: #1c1c1c;
+        }
+        th, td { border: 1px solid #555; padding: 10px; }
+        th { background-color: #00ffea; color: black; }
+        td { text-align: center; }
+    </style>
+</head>
+<body>
+    <h2>All Employees</h2>
+    <table>
+        <tr>
+            <th>ID</th><th>Name</th><th>Gender</th><th>Location</th><th>Phone</th>
+        </tr>
+        {% for emp in employees %}
+        <tr>
+            <td>{{ emp[0] }}</td>
+            <td>{{ emp[1] }}</td>
+            <td>{{ emp[2] }}</td>
+            <td>{{ emp[3] }}</td>
+            <td>{{ emp[4] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="/" style="color:#00ffea;">Back to Form</a>
+</body>
+</html>
